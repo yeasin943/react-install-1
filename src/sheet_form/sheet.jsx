@@ -5,75 +5,34 @@ const ShowSheet = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  
-    // Collect form data
-    const formData = {
-      name: name,
-      email: email,
-      message: message
-    };
-    console.log(formData);
-    // Replace this URL with your Web App URL from Google Apps Script
-    const sheetURL = 'https://cors-anywhere.herokuapp.com/https://script.google.com/macros/s/AKfycbyUNyImgeF64Wa0Nns-or7ddNpoWX9AkhO9J04x4OmfOinxIk-ISSgCnHAA-VMPLlcEUw/exec';
-  
-     // Replace with your Google Apps Script Web App URL
-//   const sheetURL = 'https://cors-anywhere.herokuapp.com/https://script.google.com/macros/s/YOUR_WEB_APP_URL/exec';
 
-  try {
-    // Send the request to Google Apps Script
-    const response =  fetch(sheetURL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),  // Sending form data as JSON
-    });
-
-    if (!response.ok) {
-      // Handle server errors (e.g., 404, 500)
-      throw new Error('Server error, please try again later.');
-    }
-
-    const data =  response.json();  // Parse the response JSON
-
-    // If the response indicates success
-    console.log('Success:', data);
-    alert('Form Submitted Successfully!');
-
-    // Clear the form fields
-    setName('');
-    setEmail('');
-    setMessage('');
-  } catch (error) {
-    // Handle errors (network, server issues, or unexpected)
-    console.error('Error:', error);
-    alert('Error Submitting Form: ' + error.message);
+const handleSubmit = (e) => {
+  e.preventDefault();  // Corrected function call (with parentheses)
+  const body = `Name=${name}&Email=${email}&Message=${message}`;
+  const data = {
+    "Name": name,
+    "Email": email,
+    "Message": message,
   }
-    // fetch(sheetURL, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(formData),  // Ensure the form data is sent as JSON
-    // })
-    // .then(response => response.json())  // Parse the response as JSON
-    // .then(data => {
-    //   console.log('Success:', data);
-    //   alert('Form Submitted Successfully!');
-      
-    //   // Clear the form fields
-    //   setName('');
-    //   setEmail('');
-    //   setMessage('');
-    // })
-    // .catch((error) => {
-    //   console.error('Error:', error);
-    //   alert('Error Submitting Form');
-    // });
-  };
+  console.log("Body",body)
+  console.log("data",data)
+  const url = "https://cors-anywhere.herokuapp.com/script.google.com/macros/s/AKfycbyUNyImgeF64Wa0Nns-or7ddNpoWX9AkhO9J04x4OmfOinxIk-ISSgCnHAA-VMPLlcEUw/exec";
   
+  // Use the state variables directly in the body
+  
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: body, // Send the data using the state values
+  })
+    .then(res => res.text())
+    .then(data => {
+      alert(data); // Show alert with the response data
+    })
+    .catch(error => alert('Error: ' + error + error.Message)); // Alert if an error occurs
+};
 
 
   return (
@@ -82,28 +41,28 @@ const ShowSheet = () => {
       <form onSubmit={handleSubmit}>
         <div>
           <label>Name:</label>
-          <input 
-            type="text" 
-            value={name} 
-            onChange={(e) => setName(e.target.value)} 
-            required 
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            
           />
         </div>
         <div>
           <label>Email:</label>
-          <input 
-            type="email" 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
-            required 
+          <input
+            type="text"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            
           />
         </div>
         <div>
           <label>Message:</label>
-          <textarea 
-            value={message} 
-            onChange={(e) => setMessage(e.target.value)} 
-            required 
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            
           />
         </div>
         <button type="submit">Submit</button>
